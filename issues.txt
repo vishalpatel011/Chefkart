@@ -1,0 +1,8 @@
+Analyzing chef_kart...                                          
+
+   info - Unnecessary use of multiple underscores - lib\screens\dish_detail_screen.dart:264:31 - unnecessary_underscores
+   info - The private field _selectedDate could be 'final' - lib\screens\select_dishes_screen.dart:18:12 - prefer_final_fields
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\select_dishes_screen.dart:108:42 - deprecated_member_use
+   info - Unnecessary use of multiple underscores - lib\screens\select_dishes_screen.dart:187:31 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\screens\select_dishes_screen.dart:229:35 - unnecessary_underscores
+
