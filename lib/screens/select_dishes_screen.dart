@@ -139,8 +139,8 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                             // show original multicolor calendar icon at consistent size
                             SvgPicture.asset(
                               'assets/start_chef2/calendar.svg',
-                              height: 23,
-                              width: 23,
+                              height: 26,
+                              width: 26,
                             ),
                             const SizedBox(width: 6),
                             Text(
@@ -162,8 +162,8 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                             // show original multicolor clock icon at same size
                             SvgPicture.asset(
                               'assets/start_chef2/clock.svg',
-                              height: 23,
-                              width: 23,
+                              height: 21,
+                              width: 21,
                             ),
                             const SizedBox(width: 6),
                             Text(
@@ -370,7 +370,7 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => DishDetailScreen(dishId: dish.id),
+                builder: (context) => const DishDetailScreen(),
               ),
             );
           },
@@ -447,7 +447,7 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Ingredients',
+                                'ingredients',
                                 style: GoogleFonts.openSans(fontSize: 12, fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 4),
