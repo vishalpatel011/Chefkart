@@ -240,20 +240,27 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
           ),
           const Divider(height: 30),
           _buildDropdownSection(
-            'Vegetables (02)',
-            ['Cauliflower', 'Tomato'],
+            'Vegetables (05)',
+            const [
+              {'name': 'Cauliflower', 'qty': '01 Pc'},
+              {'name': 'Tomato', 'qty': '10 Pc'},
+              {'name': 'Spinach', 'qty': '1/2 Kg'},
+            ],
           ),
           const SizedBox(height: 20),
           _buildDropdownSection(
-            'Spices (02)',
-            ['Coriander', 'Garam Masala'],
+            'Spices (10)',
+            const [
+              {'name': 'Coriander', 'qty': '100 gram'},
+              {'name': 'Mustard oil', 'qty': '1/2 litres'},
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDropdownSection(String title, List<String> items) {
+  Widget _buildDropdownSection(String title, List<Map<String, String>> items) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -265,11 +272,7 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
               style: GoogleFonts.openSans(fontSize: 18, fontWeight: FontWeight.w700), // Bold
             ),
             const SizedBox(width: 10),
-            SvgPicture.asset(
-              'assets/start_chef2/arrow-down.svg',
-              width: 6,
-              height: 6
-            ),
+            SvgPicture.asset('assets/start_chef2/arrow-down.svg', width: 6, height: 6),
           ],
         ),
         const SizedBox(height: 10),
@@ -279,17 +282,22 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
           itemCount: items.length,
           separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemBuilder: (context, index) {
-            final item = items[index];
+            final name = items[index]['name'] ?? '';
+            final qty = items[index]['qty'] ?? '';
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  item,
+                  name,
                   style: GoogleFonts.openSans(fontSize: 16, fontWeight: FontWeight.w400), // Regular
                 ),
                 Text(
-                  '1 Pc',
-                  style: GoogleFonts.openSans(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.w400), // Regular
+                  qty,
+                  style: GoogleFonts.openSans(
+                    fontSize: 16,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w400, // Regular
+                  ),
                 ),
               ],
             );
