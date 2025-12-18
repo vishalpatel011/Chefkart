@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/dish_model.dart';
 import '../services/api_service.dart';
 import 'dish_detail_screen.dart';
@@ -30,7 +30,7 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
+          icon: SvgPicture.asset('assets/start_chef2/arrow-left.svg', width: 16, height: 16,),
           onPressed: () {},
         ),
         title: const Text(
@@ -53,18 +53,21 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
           }
 
           final popularDishes =
-              snapshot.data!['popularDishes'] as List<PopularDish>;
+          snapshot.data!['popularDishes'] as List<PopularDish>;
           final dishes = snapshot.data!['dishes'] as List<Dish>;
+          // Ensure popular dishes are mapped to full Dish objects so every row
+          // uses the same layout (shows equipment icons, description, rating etc.)
           final allDishes = <Dish>[
             ...dishes,
             ...popularDishes.map((d) => Dish(
-                  id: d.id,
-                  name: d.name,
-                  image: d.image,
-                  rating: 0, // Popular dishes don't have a rating in the API
-                  description: '', // Or a default description
-                  equipments: [], // No equipment for popular dishes in this context
-                ))
+              id: d.id,
+              name: d.name,
+              image: d.image,
+              rating: 4.2, // default rating to match UI badge on the first item
+              description: 'Chicken fried in deep tomato sauce with delicious spices',
+              // provide two equipments so icons show consistently like the first row
+              equipments: ['Refrigerator', 'Refrigerator'],
+            ))
           ];
 
           return Stack(
@@ -73,14 +76,14 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildDateSelector(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 6),
                   _buildPopularDishes(popularDishes),
                   const Divider(
-                    thickness: 8,
-                    height: 32,
+                    thickness: 5,
+                    height: 0,
                     color: Color(0xFFF7F7F7),
                   ),
-                  _buildRecommendedHeader(),
+                  // The Recommended header is now included inside the scrollable dish list
                   Expanded(child: _buildDishList(allDishes)),
                 ],
               ),
@@ -96,16 +99,16 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
     return Container(
       color: Colors.white,
       child: SizedBox(
-        height: 170, // reduced height to remove extra white space
+        height: 190, // increased to match reference overlap with black bar
         child: Stack(
           clipBehavior: Clip.none,
           children: [
             Container(
-              height: 70, //Black Bar
+              height: 60, // larger black bar to match reference UI
               color: Colors.black,
             ),
             Positioned(
-              top: 45, // slightly pulled up so the layout matches reference image
+              top: 30, // shift down so the white card overlaps more like the reference
               left: 20,
               right: 20,
               child: Column(
@@ -121,7 +124,7 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                       borderRadius: BorderRadius.circular(15),
                       boxShadow: [
                         BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.12),
+                          color: const Color.fromRGBO(0, 0, 0, 0.12),
                           spreadRadius: 2,
                           blurRadius: 5,
                           offset: const Offset(0, 3),
@@ -133,42 +136,50 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                       children: [
                         Row(
                           children: [
-                            Icon(
-                              Icons.calendar_today,
-                              size: 20,
-                              color: Colors.orange,
+                            // show original multicolor calendar icon at consistent size
+                            SvgPicture.asset(
+                              'assets/start_chef2/calendar.svg',
+                              height: 23,
+                              width: 23,
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: 6),
                             Text(
                               DateFormat('dd MMM yyyy').format(_selectedDate),
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style: GoogleFonts.openSans(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
                             ),
                           ],
                         ),
                         Container(
-                          height: 30,
+                          height: 38,
                           width: 1,
                           color: Colors.grey[300],
                         ),
                         Row(
                           children: [
-                            Icon(
-                              Icons.access_time,
-                              size: 20,
-                              color: Colors.orange,
+                            // show original multicolor clock icon at same size
+                            SvgPicture.asset(
+                              'assets/start_chef2/clock.svg',
+                              height: 23,
+                              width: 23,
                             ),
-                            const SizedBox(width: 8),
-                            const Text(
+                            const SizedBox(width: 6),
+                            Text(
                               '10:30 Pm-12:30 Pm',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: GoogleFonts.openSans(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
                             ),
                           ],
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 18), // small spacing between card and chips
-                  _buildCategoryFilter(padding: const EdgeInsets.symmetric(horizontal: 20)),
+                  const SizedBox(height: 25),
+                  _buildCategoryFilter(padding: const EdgeInsets.symmetric(horizontal: 0)),
                 ],
               ),
             ),
@@ -191,15 +202,15 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
           return Chip(
             label: Text(
               ['Italian', 'Indian', 'Indian', 'Indian'][index],
-              style: TextStyle(
-                color: isSelected ? Colors.orange : Colors.grey,
-                fontWeight: FontWeight.bold,
+              style: GoogleFonts.openSans(
+                color: isSelected ? const Color(0xFFFF8A00) : Colors.grey,
+                fontWeight: FontWeight.w400, // Regular
               ),
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: isSelected ? const Color(0xFFFFF9F2) : Colors.white,
             shape: StadiumBorder(
               side: BorderSide(
-                color: isSelected ? Colors.orange : Colors.grey[300]!,
+                color: isSelected ? const Color(0xFFFF8A00) : Colors.grey[300]!,
               ),
             ),
             elevation: 0,
@@ -213,16 +224,17 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.fromLTRB(20, 8, 20, 0), // reduced top spacing to align under chips
+        // Popular Dishes header (Open Sans, Bold)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: Text(
             'Popular Dishes',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: GoogleFonts.openSans(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 18),
         SizedBox(
-          height: 110,
+          height: 108,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -240,25 +252,44 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                       padding: const EdgeInsets.all(2),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.orange, width: 2),
+                        border: Border.all(color: const Color(0xFFFF8A00), width: 2),
                       ),
                       child: ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl: dish.image,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) =>
-                              Container(color: Colors.grey[200]),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                        // Add a dark translucent mask and name overlay inside the circular image
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: Image.asset(
+                                'assets/start_chef2/img_1.png',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            // translucent black overlay to make text readable
+                            Positioned.fill(
+                              child: Container(
+                                color: const Color.fromRGBO(0, 0, 0, 0.35),
+                              ),
+                            ),
+                            // dish name centered inside the circle
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                                child: Text(
+                                  dish.name,
+                                  style: const TextStyle(
+                                    fontFamily: 'Open Sans',
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600, // SemiBold
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      dish.name,
-                      style: const TextStyle(fontSize: 12),
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
@@ -272,7 +303,7 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
 
   Widget _buildRecommendedHeader() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+      padding: const EdgeInsets.fromLTRB(2, 12, 0, 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -280,35 +311,60 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
             children: [
               const Text(
                 'Recommended',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontFamily: 'Open Sans',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              const Icon(Icons.arrow_drop_down),
+              const SizedBox(width: 6), // 👈 move arrow to the right
+              SvgPicture.asset(
+                'assets/start_chef2/arrow-down.svg',
+                width: 6,
+                height: 6,
+              ),
             ],
           ),
+
           ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(10),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
-            child: const Text('Menu', style: TextStyle(color: Colors.white)),
+            child: Text('Menu', style: GoogleFonts.openSans(fontWeight: FontWeight.bold, color: Colors.white)),
           ),
+
         ],
       ),
     );
   }
 
   Widget _buildDishList(List<Dish> dishes) {
+    // Make the Recommended header the first scrollable item so it scrolls with the list
+    final totalCount = dishes.length + 1; // +1 for header
     return ListView.separated(
-      itemCount: dishes.length,
+      itemCount: totalCount,
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 80),
-      separatorBuilder: (context, index) =>
-          const Divider(color: Color(0xFFF7F7F7), thickness: 1),
+      // Draw a thin divider between dishes (skip between header and first dish)
+      separatorBuilder: (context, index) {
+        if (index == 0) return const SizedBox.shrink();
+        // Add small vertical spacing above and below the divider so it doesn't
+        // sit flush against the dish content.
+        return const Padding(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Divider(color: Color(0xFFF7F7F7), height: 1, thickness: 1),
+        );
+      },
       itemBuilder: (context, index) {
-        final dish = dishes[index];
+        if (index == 0) {
+          return _buildRecommendedHeader();
+        }
+
+        final dish = dishes[index - 1];
         return InkWell(
           onTap: () {
             Navigator.push(
@@ -319,7 +375,7 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
             );
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -333,24 +389,14 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                           Text(
                             dish.name,
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Open Sans',
+                              fontWeight: FontWeight.w600, // SemiBold
                               fontSize: 16,
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.green),
-                              borderRadius: BorderRadius.circular(4),
-                            ), // Veg icon mock
-                            child: const Icon(
-                              Icons.circle,
-                              size: 8,
-                              color: Colors.green,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
+                          SvgPicture.asset('assets/start_chef2/veg.svg',height: 13,width: 13),
+                          const SizedBox(width: 11),
                           if (dish.rating > 0)
                             Container(
                               padding: const EdgeInsets.symmetric(
@@ -358,7 +404,7 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.green,
+                                color: const Color(0xFF2ECC71),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Row(
@@ -381,31 +427,35 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                             ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 10),
+                      // Equipment icons followed by a vertical label block (Ingredients / View list)
+                      // Center icons vertically so they align with the 30px divider
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           if (dish.equipments.isNotEmpty)
-                            _buildEquipmentIcon(dish.equipments),
+                            // increase spacing between icons for clearer separation
+                            _buildEquipmentIcon(dish.equipments, size: 20, spacing: 20),
                           if (dish.equipments.isNotEmpty)
                             Container(
-                              height: 15,
+                              height: 30,
                               width: 1,
                               color: Colors.grey,
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              margin: const EdgeInsets.symmetric(horizontal: 16),
                             ),
-                          const Text(
-                            'Ingredients',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const Text(
-                            ' View list >',
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.orange,
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Ingredients',
+                                style: GoogleFonts.openSans(fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'View list >',
+                                style: GoogleFonts.openSans(fontSize: 12, color: Color(0xFFFF8A00)),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -414,8 +464,10 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                         Text(
                           dish.description,
                           style: const TextStyle(
+                            fontFamily: 'Open Sans',
                             color: Colors.grey,
                             fontSize: 12,
+                            fontWeight: FontWeight.normal,
                           ),
                         ),
                     ],
@@ -430,15 +482,11 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: CachedNetworkImage(
-                          imageUrl: dish.image,
+                        child: Image.asset(
+                          'assets/start_chef2/img.png',
                           height: 100,
                           width: double.infinity,
                           fit: BoxFit.cover,
-                          placeholder: (context, url) =>
-                              Container(color: Colors.grey[200]),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
                         ),
                       ),
                       Positioned(
@@ -455,7 +503,7 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                                 backgroundColor: Colors.white,
                                 foregroundColor: Colors.orange,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(6),
                                   side: const BorderSide(color: Colors.orange),
                                 ),
                                 padding: const EdgeInsets.symmetric(
@@ -494,7 +542,7 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
     );
   }
 
-  Widget _buildEquipmentIcon(List<String> equipments) {
+  Widget _buildEquipmentIcon(List<String> equipments, {double size = 22, double spacing = 8}) {
     // Mock icons for equipments
     // In real app, map string to icon
     return Row(
@@ -502,18 +550,19 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
           .take(2)
           .map(
             (e) => Padding(
-              padding: const EdgeInsets.only(right: 5),
-              child: Icon(
-                e == 'Refrigerator'
-                    ? Icons.kitchen
-                    : e == 'Microwave'
-                        ? Icons.microwave
-                        : Icons.help,
-                size: 15,
-                color: Colors.grey,
-              ), // Placeholder icon
-            ),
-          )
+          // use spacing parameter to control horizontal gap between icons
+          padding: EdgeInsets.only(right: spacing),
+          child: SvgPicture.asset(
+             e == 'Refrigerator'
+                 ? 'assets/start_chef2/refrigerator.svg'
+                 : e == 'Microwave'
+                 ? 'assets/start_chef2/refrigerator.svg'
+                 : 'assets/start_chef2/help.svg', // A default icon
+             width: size,
+             height: size,
+           ),
+         ),
+       )
           .toList(),
     );
   }
@@ -530,23 +579,20 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
           color: const Color(0xFF1C1C1C),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
-                Icon(Icons.fastfood, color: Colors.white, size: 20),
-                SizedBox(width: 10),
+                SvgPicture.asset('assets/start_chef2/fastfood.svg'),
+                const SizedBox(width: 10),
                 Text(
                   '3 food items selected',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: GoogleFonts.openSans(fontWeight: FontWeight.w600, color: Colors.white),
                 ),
               ],
             ),
-            Icon(Icons.arrow_forward, color: Colors.white),
+            SvgPicture.asset('assets/start_chef2/arrow-right.svg'),
           ],
         ),
       ),

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="12.293" height="12.293" viewBox="0 0 12.293 12.293">
+  <g id="Group_393" transform="translate(-23 -337.85)">
+    <g id="clock" transform="translate(23 337.85)">
+      <path id="Path_482" d="M6.147,0a6.147,6.147,0,1,0,6.147,6.147A6.154,6.154,0,0,0,6.147,0Zm0,11.525a5.378,5.378,0,1,1,5.378-5.378,5.384,5.384,0,0,1-5.378,5.378Z"/>
+      <path id="Path_483" d="M208.562,83.118h-.768v4l2.418,2.418.543-.543L208.562,86.8Z" transform="translate(-202.032 -80.813)"/>
+    </g>
+    <path id="Path_805" d="M2305.659,338.64v3.913l2.336,2.336" transform="translate(-2276.513 1.452)" fill="none" stroke="#ff941a" stroke-width="1"/>
+  </g>
+</svg>

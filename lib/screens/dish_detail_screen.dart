@@ -70,7 +70,7 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
 
   Widget _buildHeader(DishDetail dish) {
     return Padding(
-      padding: const EdgeInsets.only(top: 40.0),
+      padding: const EdgeInsets.only(top: 20.0),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -78,7 +78,7 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
             right: -100,
             top: -50,
             child: Opacity(
-              opacity: 1,
+              opacity: 0.9,
               child: CachedNetworkImage(
                 imageUrl: dish.image,
                 height: 300,
@@ -147,7 +147,7 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
                 const SizedBox(height: 40),
                 Row(
                   children: [
-                    const Icon(Icons.access_time, size: 20),
+                    const Icon(Icons.access_time, size: 20, color: Colors.black),
                     const SizedBox(width: 8),
                     Text(
                       dish.timeToPrepare,
@@ -210,7 +210,7 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
               title,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const Icon(Icons.keyboard_arrow_down),
+            const Icon(Icons.keyboard_arrow_down, color: Colors.black),
           ],
         ),
         const SizedBox(height: 10),
@@ -235,21 +235,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
   }
 
   Widget _buildAppliancesSection(List<ApplianceItem> appliances) {
-    // Override with static appliances for demo
-    final staticAppliances = [
-      ApplianceItem(
-        name: 'Refrigerator',
-        image: 'https://img.freepik.com/free-psd/sleek-stainless-steel-french-door-refrigerator_632498-25861.jpg',
-      ),
-      ApplianceItem(
-        name: 'Microwave',
-        image: 'https://img.freepik.com/free-vector/microwave-oven-with-light-inside-isolated-white-background-kitchen-appliances_134830-658.jpg?semt=ais_se_enriched&w=740&q=80',
-      ),
-      ApplianceItem(
-        name: 'Stove',
-        image: 'https://img.freepik.com/free-vector/realistic-vector-icon-illustration-modern-oven-multi-function-gas-stove-with-blue-fire-burner_134830-2432.jpg?semt=ais_hybrid&w=740&q=80',
-      ),
-    ];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -263,7 +248,7 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          _buildAppliancesList(staticAppliances),
+          _buildAppliancesList(appliances),
         ],
       ),
     );
@@ -284,29 +269,16 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
             decoration: BoxDecoration(
               color: Colors.grey[100],
               borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withAlpha((0.2 * 255).toInt()),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: const Offset(0, 3),
-                ),
-              ],
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CachedNetworkImage(
-                  imageUrl: app.image.isNotEmpty
-                      ? app.image
-                      : 'https://ik.imagekit.io/utod9iykp/ChefKart/641f267633517556f8f533a3_image.png',
+                Image.asset(
+                  'assets/${app.name.toLowerCase()}.png', // Assuming image assets are named like 'refrigerator.png'
                   height: 50,
                   width: 50,
                   fit: BoxFit.contain,
-                  placeholder: (context, url) =>
-                      const Icon(Icons.kitchen, size: 40, color: Colors.grey),
-                  errorWidget: (context, url, error) =>
-                      const Icon(Icons.error, size: 40, color: Colors.grey),
+                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.kitchen, size: 40, color: Colors.grey),
                 ),
                 const SizedBox(height: 10),
                 Text(
