@@ -136,11 +136,18 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                       children: [
                         Row(
                           children: [
-                            // show original multicolor calendar icon at consistent size
-                            SvgPicture.asset(
-                              'assets/start_chef2/calendar.svg',
-                              height: 26,
-                              width: 26,
+                            // Calendar icon (match reference sizing & alignment)
+                            SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  'assets/start_chef2/calendar.svg',
+                                  width: 26,
+                                  height: 26,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
                             ),
                             const SizedBox(width: 6),
                             Text(
@@ -229,7 +236,7 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: Text(
             'Popular Dishes',
-            style: GoogleFonts.openSans(fontSize: 18, fontWeight: FontWeight.bold),
+            style: GoogleFonts.openSans(fontSize: 18.5, fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(height: 18),
@@ -241,59 +248,35 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
             itemCount: dishes.length,
             separatorBuilder: (context, index) => const SizedBox(width: 15),
             itemBuilder: (context, index) {
-              final dish = dishes[index];
-              return SizedBox(
-                width: 80,
-                child: Column(
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      padding: const EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFFFF8A00), width: 2),
-                      ),
-                      child: ClipOval(
-                        // Add a dark translucent mask and name overlay inside the circular image
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Image.asset(
-                                'assets/start_chef2/img_1.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            // translucent black overlay to make text readable
-                            Positioned.fill(
-                              child: Container(
-                                color: const Color.fromRGBO(0, 0, 0, 0.35),
-                              ),
-                            ),
-                            // dish name centered inside the circle
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                                child: Text(
-                                  dish.name,
-                                  style: const TextStyle(
-                                    fontFamily: 'Open Sans',
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600, // SemiBold
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
+               final showBorder = index != 0;
+               return SizedBox(
+                 width: 82,
+                 child: Column(
+                   children: [
+                     Container(
+                       width: 82,
+                       height: 82,
+                       padding: const EdgeInsets.all(2),
+                       decoration: BoxDecoration(
+                         shape: BoxShape.circle,
+                         border: showBorder
+                             ? Border.all(
+                                 color: const Color(0xFFFF8A00),
+                                 width: 1.5, // slightly thinner ring
+                               )
+                             : null,
+                       ),
+                       child: ClipOval(
+                         // Use the provided cropped biryani image in every orange circle.
+                         child: Image.asset(
+                           'assets/start_chef2/biryani_cropped.png',
+                           fit: BoxFit.cover,
+                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+               );
             },
           ),
         ),
@@ -313,7 +296,7 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                 'Recommended',
                 style: TextStyle(
                   fontFamily: 'Open Sans',
-                  fontSize: 20,
+                  fontSize: 20.5,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -480,13 +463,36 @@ class _SelectDishesScreenState extends State<SelectDishesScreen> {
                     alignment: Alignment.bottomCenter,
                     clipBehavior: Clip.none,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.asset(
-                          'assets/start_chef2/img.png',
-                          height: 100,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
+                      // Image card (match reference: slightly smaller, consistent rounding)
+                      SizedBox(
+                        height: 85,
+                        // Keep the card on the right, but reduce its width.
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: SizedBox(
+                            width: 125,
+                            height: 95,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              clipBehavior: Clip.antiAlias,
+                              child: Transform.translate(
+                                // Keep image in the same position vertically
+                                offset: const Offset(0, -1),
+                                child: Transform.scale(
+                                  // Zoom in slightly
+                                  scale: 1.10,
+                                  child: Image.asset(
+                                    'assets/start_chef2/img.png',
+                                    height: 100,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    // Shift crop slightly to the right
+                                    alignment: const Alignment(-1.2, 0.0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       Positioned(
